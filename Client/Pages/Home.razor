@@ -1,0 +1,18 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+@inject IJSRuntime JS
+
+<div id="map" style="height:90vh;width:100%;"></div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JS.InvokeVoidAsync("initialize", null);
+            StateHasChanged();
+        }
+    }
+}
