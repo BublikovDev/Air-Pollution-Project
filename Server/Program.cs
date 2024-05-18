@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Server.Data;
+using Server.Services;
 using Shared.Models.User;
 using System;
 using System.Text;
@@ -131,6 +132,9 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 #endregion
+
+
+builder.Services.AddScoped<IOpenAqService, OpenAqService>();
 
 var app = builder.Build();
 

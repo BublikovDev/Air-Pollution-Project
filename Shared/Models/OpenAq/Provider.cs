@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.Models.OpenAq.Locations
+namespace Shared.Models.OpenAq
 {
-    public class Instrument
+    public class Provider
     {
         public int id { get; set; }
         public string name { get; set; }

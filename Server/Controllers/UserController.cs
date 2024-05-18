@@ -7,6 +7,8 @@ using Shared.Models.User;
 
 namespace Server.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class UserController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

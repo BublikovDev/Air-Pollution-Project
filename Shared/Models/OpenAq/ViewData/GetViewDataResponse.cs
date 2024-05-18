@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.Models.Map
+namespace Shared.Models.OpenAq.ViewData
 {
-    public class Marker
+    public class GetViewDataResponse
     {
-        public int Id { get; set; }
+
     }
 }

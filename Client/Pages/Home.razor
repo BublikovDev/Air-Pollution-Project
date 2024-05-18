@@ -7,11 +7,24 @@
 <div id="map" style="height:90vh;width:100%;"></div>
 
 @code {
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await JS.InvokeVoidAsync("initialize", null);
+            StateHasChanged();
+            await Task.Delay(5000);
+            var ltd = 52.192678;
+            var lng = 20.838901;
+            await JS.InvokeVoidAsync("addMarkers", ltd, lng);
             StateHasChanged();
         }
     }

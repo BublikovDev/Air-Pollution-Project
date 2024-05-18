@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Server.Data;
+using Server.Services;
 using Shared.Models.Auth.Requests;
 using Shared.Models.OpenAq.Locations;
 using System.Net.Http.Headers;
@@ -13,6 +14,29 @@ namespace Server.Controllers
     public class OpenAqController : Controller
     {
         private readonly AppDbContext _dataContext;
+        private readonly IOpenAqService _openAqService;
+
+        public OpenAqController(AppDbContext dataContext, IOpenAqService openAqService)
+        {
+            _dataContext = dataContext;
+            _openAqService = openAqService;
+        }
+
+        [AllowAnonymous]
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetCountries()
+        {
+            try
+            {
+                var countries = await _openAqService.GetCountriesAsync();
+
+                return Ok(countries.results);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         [AllowAnonymous]
         [HttpGet("[action]/{countryId}")]
@@ -20,28 +44,31 @@ namespace Server.Controllers
         {
             try
             {
-                var client = new HttpClient();
-                var request = new HttpRequestMessage
-                {
-                    Method = HttpMethod.Get,
-                    RequestUri = new Uri($"https://api.openaq.org/v3/locations?order_by=id&sort_order=asc&countries_id={countryId}&limit=100&page=1"),
-                    Headers =
-                    {
-                        { "accept", "application/json" },
-                    },
-                };
-                using (var response = await client.SendAsync(request))
-                {
-                    response.EnsureSuccessStatusCode();
-                    var body = await response.Content.ReadAsStringAsync();
-                    GetLocationsResponse myDeserializedClass = JsonConvert.DeserializeObject<GetLocationsResponse>(body);
-                    return Ok(myDeserializedClass);
-                }
+                var locations = await _openAqService.GetLocationsAsync(countryId);
+                
+                return Ok(locations.results);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
+
+        [AllowAnonymous]
+        [HttpGet("[action]/{locationId}")]
+        public async Task<IActionResult> GetSensors(int locationId)
+        {
+            try
+            {
+                var sensors = await _openAqService.GetSensorsByLocationIdAsync(locationId);
+                
+                return Ok(sensors.results);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

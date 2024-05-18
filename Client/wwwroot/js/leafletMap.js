@@ -8,7 +8,9 @@ function initialize() {
         }).addTo(map);
 
 
-var marker = L.marker([52.200577, 20.895988]).addTo(map);
-var marker = L.marker([52.192678, 20.838901]).addTo(map);
-var marker = L.marker([52.230321, 20.834141]).addTo(map);
+
+}
+
+function addMarkers(ltd, lng) {
+    var marker = L.marker([ltd, lng]).addTo(map);
 }

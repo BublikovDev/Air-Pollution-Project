@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.Models.OpenAq.Locations
+namespace Shared.Models.OpenAq.Sensors
 {
-    public class DatetimeFirst
+    public class Datetime
     {
         public DateTime utc { get; set; }
         public DateTime local { get; set; }
