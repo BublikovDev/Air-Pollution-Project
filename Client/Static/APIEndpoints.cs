@@ -16,9 +16,10 @@
         internal readonly static string s_userPutData = $"{ServerBaseUrl}/api/user/userdata";
 
 
-        internal readonly static string s_ = $"{ServerBaseUrl}/api/user/userdata";
+        internal readonly static string s_ = $"{ServerBaseUrl}/api/data";
 
-        //internal readonly static string s_liveStreamGetByIdFormat = string.Format("{0}/{1}/GetLiveStream/{2}", ServerBaseUrl, LiveStreamRoute, "{0}");
+        internal readonly static string s_getData = string.Format("{0}/api/data/getdata/{1}", ServerBaseUrl, "{0}");
+        internal readonly static string s_putData = string.Format("{0}/api/data/putdata/{1}", ServerBaseUrl, "{0}");
         //internal readonly static string s_liveStreamGetAllFormat = string.Format("{0}/{1}/GetAllLiveStreams", ServerBaseUrl, LiveStreamRoute);
         //internal readonly static string s_liveStreamCreateFormat = string.Format("{0}/{1}/CreateLiveStream", ServerBaseUrl, LiveStreamRoute);
         //internal readonly static string s_liveStreamGetThumbnailByIdFormat = string.Format("{0}/{1}/GetThumbnailUrl/{2}", ServerBaseUrl, LiveStreamRoute, "{0}");

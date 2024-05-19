@@ -41,7 +41,7 @@ namespace Server.Services
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://api.openaq.org/v3/locations?order_by=id&sort_order=asc&countries_id={countryId}&limit=100&page=1"),
+                RequestUri = new Uri($"https://api.openaq.org/v3/locations?order_by=id&sort_order=asc&countries_id={countryId}&limit=10&page=1"),
                 Headers =
                     {
                         { "accept", "application/json" },
@@ -67,29 +67,68 @@ namespace Server.Services
                     { "accept", "application/json" },
                 },
             };
-            using (var response = await _client.SendAsync(request))
+            Console.WriteLine($"GetSensorByLocationId: Try get response for {locationId}");
+            var response = await _client.SendAsync(request);
+            Console.WriteLine($"GetSensorByLocationId: Response code for {locationId} is {response.StatusCode}");
+
+            if (response.StatusCode == (System.Net.HttpStatusCode)429)
+                {
+                    Console.WriteLine($"GetSensorByLocationId: 429 Try get response for {locationId}");
+                    await Task.Delay(10000);
+                    Console.WriteLine($"GetSensorByLocationId: Retrying {locationId}");
+                    return await GetSensorsByLocationIdAsync(locationId);
+                }
+            if(response.StatusCode==(System.Net.HttpStatusCode)500)
             {
-                response.EnsureSuccessStatusCode();
-                var body = await response.Content.ReadAsStringAsync();
-                GetSensorsByLocationIdResponse getSensorsByLocationIdResponse = JsonConvert.DeserializeObject<GetSensorsByLocationIdResponse>(body);
-                return getSensorsByLocationIdResponse;
+                Console.WriteLine($"Internal server error for {locationId}");
+                return null;
             }
+
+            response.EnsureSuccessStatusCode();
+            var body = await response.Content.ReadAsStringAsync();
+            GetSensorsByLocationIdResponse getSensorsByLocationIdResponse = JsonConvert.DeserializeObject<GetSensorsByLocationIdResponse>(body);
+            return getSensorsByLocationIdResponse;
+            
         }
 
-        public async Task<GetViewDataResponse> GetViewDataAsync(int countryId)
+        public async Task<List<GetViewDataResponse>> GetViewDataAsync(int countryId)
         {
             var locations = await GetLocationsAsync(countryId);
 
-            //List<Shared.Models.OpenAq.Sensors.Result> 
-
-            List<List<Shared.Models.OpenAq.Sensors.Result>> allLocationInfo = new List<List<Shared.Models.OpenAq.Sensors.Result>>();
-
-            foreach (var loc in locations.results)
+            List<GetViewDataResponse> dataResponse = new();
+            foreach (var location in locations.results)
             {
-                var sensors = await GetSensorsByLocationIdAsync(loc.id);
-                allLocationInfo.Add(sensors.results);
+                await Task.Delay(3000);
+                Console.WriteLine($"GetViewData: Get sensors by {location.id}");
+                var sensors = await GetSensorsByLocationIdAsync(location.id);
+
+                if (sensors != null)
+                {
+                    dataResponse.Add(new GetViewDataResponse()
+                    {
+                        id = location.id,
+                        name = location.name,
+                        locality = location.locality,
+                        timezone = location.timezone,
+                        country = location.country,
+                        owner = location.owner,
+                        provider = location.provider,
+                        isMobile = location.isMobile,
+                        isMonitor = location.isMonitor,
+                        instruments = location.instruments,
+
+                        sensors = sensors.results,
+
+                        coordinates = location.coordinates,
+                        licenses = location.licenses,
+                        bounds = location.bounds,
+                        distance = location.distance,
+                        datetimeFirst = location.datetimeFirst,
+                        datetimeLast = location.datetimeLast,
+                    });
+                }
             }
-            return null;
+            return dataResponse;
         }
     }
 }

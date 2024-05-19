@@ -10,6 +10,6 @@ namespace Server.Services
         public Task<GetCountriesResponse> GetCountriesAsync();
         public Task<GetLocationsResponse> GetLocationsAsync(int countryId);
         public Task<GetSensorsByLocationIdResponse> GetSensorsByLocationIdAsync(int locationId);
-        public Task<GetViewDataResponse> GetViewDataAsync(int locationId);
+        public Task<List<GetViewDataResponse>> GetViewDataAsync(int countryId);
     }
 }

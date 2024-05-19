@@ -13,12 +13,10 @@ namespace Server.Controllers
     [ApiController]
     public class OpenAqController : Controller
     {
-        private readonly AppDbContext _dataContext;
         private readonly IOpenAqService _openAqService;
 
-        public OpenAqController(AppDbContext dataContext, IOpenAqService openAqService)
+        public OpenAqController(IOpenAqService openAqService)
         {
-            _dataContext = dataContext;
             _openAqService = openAqService;
         }
 
@@ -69,6 +67,23 @@ namespace Server.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [AllowAnonymous]
+        [HttpGet("[action]/{countryId}")]
+        public async Task<IActionResult> GetViewData(int countryId)
+        {
+            try
+            {
+                var data = await _openAqService.GetViewDataAsync(countryId);
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
     }
 }

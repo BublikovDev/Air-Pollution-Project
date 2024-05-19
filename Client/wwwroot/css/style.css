@@ -1,0 +1,66 @@
+﻿.green-div-icon {
+    background: green;
+    border: 3px solid rgba(255,255,255,0.5);
+    color: blue;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 50%;
+    line-height: 50px !important;
+    height: 50px !important;
+    width: 50px !important;
+}
+.yellow-div-icon {
+    background: yellow;
+    border: 3px solid rgba(255,255,255,0.5);
+    color: blue;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 50%;
+    line-height: 50px !important;
+    height: 50px !important;
+    width: 50px !important;
+}
+.orange-div-icon {
+    background: orange;
+    border: 3px solid rgba(255,255,255,0.5);
+    color: blue;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 50%;
+    line-height: 50px !important;
+    height: 50px !important;
+    width: 50px !important;
+}
+.red-div-icon {
+    background: red;
+    border: 3px solid rgba(255,255,255,0.5);
+    color: blue;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 50%;
+    line-height: 50px!important;
+    height: 50px!important;
+    width: 50px!important;
+}
+.purple-div-icon {
+    background: purple;
+    border: 3px solid rgba(255,255,255,0.5);
+    color: blue;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 50%;
+    line-height: 50px !important;
+    height: 50px !important;
+    width: 50px !important;
+}
+.burgundy-div-icon {
+    background: purple;
+    border: 3px solid rgba(255,255,255,0.5);
+    color: blue;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 50%;
+    line-height: 50px !important;
+    height: 50px !important;
+    width: 50px !important;
+}
