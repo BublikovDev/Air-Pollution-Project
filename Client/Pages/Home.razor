@@ -30,7 +30,7 @@
                     StateHasChanged();
                     foreach (var item in _country.Locations)
                     {
-                        await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude, item.Sensors.FirstOrDefault(s => s.Name == "pm25 µg/m³").Value);
+                        await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude);
                     }
 
                     StateHasChanged();

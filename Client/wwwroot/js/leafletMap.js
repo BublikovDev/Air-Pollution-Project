@@ -11,7 +11,7 @@ function initialize() {
 
 }
 
-function addMarkers(ltd, lng, text) {
-    var myIcon = L.divIcon({ className: 'red-div-icon', html:'<b>'+text+'</b>' });
+function addMarkers(ltd, lng) {
+    var myIcon = L.divIcon({ className: 'red-div-icon', html:'<b>'+text+'</b>'*/ });
     var marker = L.marker([ltd, lng], { icon: myIcon }).addTo(map);
 }

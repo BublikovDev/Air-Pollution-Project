@@ -41,7 +41,7 @@ namespace Server.Services
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://api.openaq.org/v3/locations?order_by=id&sort_order=asc&countries_id={countryId}&limit=10&page=1"),
+                RequestUri = new Uri($"https://api.openaq.org/v3/locations?order_by=id&sort_order=asc&countries_id={countryId}&limit=1000&page=1"),
                 Headers =
                     {
                         { "accept", "application/json" },
@@ -58,36 +58,45 @@ namespace Server.Services
 
         public async Task<GetSensorsByLocationIdResponse> GetSensorsByLocationIdAsync(int locationId)
         {
-            var request = new HttpRequestMessage
+            try
             {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://api.openaq.org/v3/locations/{locationId}/sensors"),
-                Headers =
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri($"https://api.openaq.org/v3/locations/{locationId}/sensors"),
+                    Headers =
                 {
                     { "accept", "application/json" },
                 },
-            };
-            Console.WriteLine($"GetSensorByLocationId: Try get response for {locationId}");
-            var response = await _client.SendAsync(request);
-            Console.WriteLine($"GetSensorByLocationId: Response code for {locationId} is {response.StatusCode}");
+                };
+                Console.WriteLine($"GetSensorByLocationId: Try get response for {locationId}");
+                var response = await _client.SendAsync(request);
+                Console.WriteLine($"GetSensorByLocationId: Response code for {locationId} is {response.StatusCode}");
 
-            if (response.StatusCode == (System.Net.HttpStatusCode)429)
+                if (response.StatusCode == (System.Net.HttpStatusCode)429)
                 {
                     Console.WriteLine($"GetSensorByLocationId: 429 Try get response for {locationId}");
                     await Task.Delay(10000);
                     Console.WriteLine($"GetSensorByLocationId: Retrying {locationId}");
                     return await GetSensorsByLocationIdAsync(locationId);
                 }
-            if(response.StatusCode==(System.Net.HttpStatusCode)500)
+                if (response.StatusCode == (System.Net.HttpStatusCode)500)
+                {
+                    Console.WriteLine($"Internal server error for {locationId}");
+                    return null;
+                }
+
+                response.EnsureSuccessStatusCode();
+                var body = await response.Content.ReadAsStringAsync();
+                GetSensorsByLocationIdResponse getSensorsByLocationIdResponse = JsonConvert.DeserializeObject<GetSensorsByLocationIdResponse>(body);
+                return getSensorsByLocationIdResponse;
+            }
+            catch(Exception ex)
             {
-                Console.WriteLine($"Internal server error for {locationId}");
+                Console.WriteLine("=======================================================================");
+                Console.WriteLine("ERROR"+ex.ToString());
                 return null;
             }
-
-            response.EnsureSuccessStatusCode();
-            var body = await response.Content.ReadAsStringAsync();
-            GetSensorsByLocationIdResponse getSensorsByLocationIdResponse = JsonConvert.DeserializeObject<GetSensorsByLocationIdResponse>(body);
-            return getSensorsByLocationIdResponse;
             
         }
 
