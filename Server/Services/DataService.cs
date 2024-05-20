@@ -24,6 +24,57 @@ namespace Server.Services
                 .ThenInclude(l => l.Sensors)
                 .FirstOrDefaultAsync(c => c.Id == countryId);
 
+            //if (data != null)
+            //{
+            //    foreach (var location in data.Locations)
+            //    {
+            //        var AQI = 0.0;
+            //        foreach (var sensorItem in location.Sensors)
+            //        {
+            //            var subAqi = CalculateSubIndex(sensorItem.Name, sensorItem.Value);
+            //            if (subAqi > AQI) { AQI = subAqi; }
+            //        }
+            //        var sensorAqi = location.Sensors.FirstOrDefault(s => s.Name == "AQI");
+            //        if (sensorAqi == null)
+            //        {
+            //            var newId = _appDbContext.Sensors.Any() ? _appDbContext.Sensors.Select(p => p.Id).Max() + 1 : 1;
+
+            //            sensorAqi = new Sensor()
+            //            {
+            //                Id = newId,
+            //                Name = "AQI",
+            //                LatestTimeUtc = DateTime.UtcNow,
+            //                LatestTimeLocal = DateTime.Now,
+            //                Value = AQI,
+            //                MinValue = AQI,
+            //                MaxValue = AQI,
+            //                AvgValue = AQI,
+
+            //                LocationId = location.Id,
+            //                Location = location,
+            //            };
+
+            //            await _appDbContext.Sensors.AddAsync(sensorAqi);
+            //        }
+            //        else
+            //        {
+            //            sensorAqi.Name = "AQI";
+            //            sensorAqi.LatestTimeUtc = DateTime.UtcNow;
+            //            sensorAqi.LatestTimeLocal = DateTime.Now;
+            //            sensorAqi.Value = AQI;
+            //            if (sensorAqi.MinValue > AQI) { sensorAqi.MinValue = AQI; }
+            //            if (sensorAqi.MaxValue < AQI) { sensorAqi.MaxValue = AQI; }
+            //        }
+            //        location.Sensors.Add(sensorAqi);
+            //        await _appDbContext.SaveChangesAsync();
+            //    }
+                
+            //}
+
+            //data = await _appDbContext.Countries
+            //    .Include(c => c.Locations)
+            //    .ThenInclude(l => l.Sensors)
+            //    .FirstOrDefaultAsync(c => c.Id == countryId);
 
             return data;
         }
@@ -113,9 +164,11 @@ namespace Server.Services
                 var sensorAqi = await _appDbContext.Sensors.Where(s=>s.LocationId==location.Id).FirstOrDefaultAsync(s=>s.Name=="AQI");
                 if (sensorAqi == null)
                 {
+                    var newId = _appDbContext.Sensors.Any() ? _appDbContext.Sensors.Select(p => p.Id).Max() + 1 : 1;
+
                     sensorAqi = new Sensor()
                     {
-                        Id = 14888841,
+                        Id =newId ,
                         Name = "AQI",
                         LatestTimeUtc = DateTime.UtcNow,
                         LatestTimeLocal = DateTime.Now,
@@ -150,7 +203,7 @@ namespace Server.Services
         {
             double subIndex = 0;
 
-            switch (name.ToLower())
+            switch (name.ToLower().Split()[0])
             {
                 case "pm10":
                     subIndex = CalculatePM10SubIndex(value);
@@ -171,7 +224,7 @@ namespace Server.Services
                     subIndex = CalculateSO2SubIndex(value);
                     break;
                 default:
-                    throw new ArgumentException("Unknown parameter name");
+                    return 0;
             }
 
             return subIndex;

@@ -6,7 +6,14 @@
 
 @inject IJSRuntime JS
 
-<div id="map" style="height:90vh;width:100%;"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div id="map" style="height:85vh;width:100%;"></div>
+        </div>
+    </div>
+</div>
+
 
 @code {
     [Inject] HttpClient HttpClient { get; set; }
@@ -30,7 +37,23 @@
                     StateHasChanged();
                     foreach (var item in _country.Locations)
                     {
-                        await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude);
+                        var aqiSensor = item.Sensors.Where(s => s.Name == "AQI").FirstOrDefault();
+                        
+                        if(aqiSensor.Value<=50)
+                            await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude, (int)aqiSensor.Value, "green-div-icon");
+                        else if (aqiSensor.Value <= 100)
+                            await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude, (int)aqiSensor.Value, "yellow-div-icon");
+                        else if (aqiSensor.Value <= 150)
+                            await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude, (int)aqiSensor.Value, "orange-div-icon");
+                        else if (aqiSensor.Value <= 200)
+                            await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude, (int)aqiSensor.Value, "red-div-icon");
+                        else if (aqiSensor.Value <= 300)
+                            await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude, (int)aqiSensor.Value, "purple-div-icon");
+                        // else if (aqiSensor.Value > 300)
+                        //     await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude, (int)aqiSensor.Value, "burgundy-div-icon");
+                        // else
+                        //     await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude, (int)aqiSensor.Value, "grey-div-icon");
+
                     }
 
                     StateHasChanged();

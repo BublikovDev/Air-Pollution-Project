@@ -77,7 +77,7 @@ namespace Server.Controllers
         {
             try
             {
-                ApplicationUser? userByUserName = await _userManager!.FindByNameAsync(request.Username);
+                ApplicationUser? userByUserName = await _userManager!.FindByNameAsync(request.Email);
 
                 if (userByUserName != null)
                     return BadRequest("User with the same user name already exists!");
@@ -89,10 +89,8 @@ namespace Server.Controllers
 
                 ApplicationUser user = new ApplicationUser()
                 {
-                    UserName = request.Username,
+                    UserName = request.Email,
                     Email = request.Email,
-                    FirstName = request.FirstName,
-                    Lastname = request.Lastname,
                     Role = request.Role,
                     DebugMode = false,
                     SecurityStamp = Guid.NewGuid().ToString()

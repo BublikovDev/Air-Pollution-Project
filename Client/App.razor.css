@@ -1,0 +1,8 @@
+﻿.centered-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 85vh; /* Используем 85vh как задано */
+    width: 100%;
+    text-align: center;
+}

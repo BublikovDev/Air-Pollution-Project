@@ -1,0 +1,61 @@
+﻿@page "/signUp"
+@using Client.Static
+@using Shared.Models.Auth.Requests
+@inject IJSRuntime _jsRuntime
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h1>Green Breathe</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <EditForm Model="_user" OnValidSubmit="SignUpUser">
+                <DataAnnotationsValidator />
+                <div class="row">
+                    <div class="col-xl-12">
+                        <input @bind-value="_user.Email" type="email" placeholder="Email">
+                    </div>
+                    <div class="col-xl-12">
+                        <input @bind-value="_user.Password" type="password" placeholder="Password">
+                    </div>
+                    <div class="col-xl-12">
+                        <input @bind-value="repeatPassword" type="password" placeholder="Password">
+                    </div>
+
+                    <div class="col-xl-12">
+                        <button type="submit" class="bttn-small btn-fill w-100">Create my account</button>
+                    </div>
+                    <div class="col-xl-12">
+                        <p><a href="/signin">Do you already have an account?</a></p>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    [Inject] HttpClient HttpClient { get; set; }
+    [Inject] NavigationManager NavigationManager { get; set; }
+    private SignUpRequest _user = new();
+    private string repeatPassword;
+    private async Task SignUpUser()
+    {
+        _user.Role = "User";
+        var response = await HttpClient.PostAsJsonAsync<SignUpRequest>(APIEndpoints.s_signUp, _user);
+
+        if (response.IsSuccessStatusCode == false)
+        {
+            NavigationManager.NavigateTo("/signup");
+        }
+        else
+        {
+			NavigationManager.NavigateTo("/signin");
+		}
+	}
+}
