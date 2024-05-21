@@ -1,0 +1,42 @@
+﻿.center-block {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.image{
+    width:150px;
+}
+
+.profile-form {
+    background: #DDFFF1;
+    border: 1px solid lightgrey;
+    border-radius: 10px;
+    max-width:900px;
+}
+.right-block {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+}
+.text-grey {
+    color: #B1B1B1;
+}
+
+@media(max-width:1120px){
+    .image {
+        width: 100px;
+    }
+
+}
+
+.change-button {
+    background-color: #AFCABE;
+    border:1px solid black;
+    padding:6px 10px 3px 8px
+}
+@media(max-width:600px)
+{
+    .text-button {
+        display:none;
+    }
+}

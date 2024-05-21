@@ -1,4 +1,8 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using Blazored.LocalStorage
+@using Client.Providers
+@using Microsoft.AspNetCore.Components.Authorization
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Client</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -15,7 +19,7 @@
             </NavLink>
         </div>
         <div class="nav-item px-3">
-            <NavLink class="nav-link">
+            <NavLink class="nav-link" href="/profile">
                 <span class="bi bi-account-fill-nav-menu" aria-hidden="true"></span> Account
             </NavLink>
         </div>
@@ -35,7 +39,7 @@
             </NavLink>
         </div
         <div class="nav-item px-3">
-            <NavLink class="nav-link">
+            <NavLink class="nav-link" @onclick="SignOut">
                 <span class="bi bi-logout-fill-nav-menu" aria-hidden="true"></span> Logout
             </NavLink>
         </div>
@@ -44,6 +48,9 @@
 
 @code {
     [Inject] NavigationManager NavigationManager { get; set; }
+    [Inject] ILocalStorageService LocalStorageService { get; set; }
+    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+
     private bool collapseNavMenu = true;
     private bool display_nav = true;
 
@@ -53,5 +60,17 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
-    
+    private async Task SignOut()
+    {
+        if (await LocalStorageService.ContainKeyAsync("bearerToken"))
+        {
+            await LocalStorageService.RemoveItemAsync("bearerToken");
+
+            ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignOut();
+
+            StateHasChanged();
+
+            NavigationManager.NavigateTo("/");
+        }
+    }
 }

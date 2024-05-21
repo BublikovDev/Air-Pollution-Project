@@ -1,0 +1,85 @@
+﻿@page "/signIn"
+@using Blazored.LocalStorage
+@using Client.Providers
+@using Client.Static
+@using Microsoft.AspNetCore.Components.Authorization
+@using Newtonsoft.Json.Linq
+@using Shared.Models.Auth.Requests
+@using System.Net.Http.Headers
+@inject IJSRuntime _jsRuntime
+
+
+<div class="container-fluid sign-in">
+    <div class="row">
+        <div class="col-12 center-block">
+            <img class="image" src="/Brand_name.svg">
+        </div>
+    </div>
+    <div class="row sign-in-form mt-5">
+        <div class="col-12">
+            <button class="btn return-button">Return</button>
+        </div>
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 center-block">
+                    <h2 style="color:#128756"><b>Log In</b></h2>
+                </div>
+            </div>
+            <EditForm Model="_user" OnValidSubmit="SignInUser">
+                <DataAnnotationsValidator />
+                <div class="row">
+                    <div class="col-12 center-block mt-3">
+                        <input @bind-value="_user.UsernameOrEmail" type="email" placeholder="Email" class="inputSignIn">
+                    </div>
+                    <div class="col-12 center-block mt-3">
+                        <input @bind-value="_user.Password" type="password" placeholder="Password" class="inputSignIn">
+                    </div>
+
+                    <div class="col-12 center-block mt-5">
+                        <button type="submit" class="btn login-button">Login</button>
+                    </div>
+                    <div class="col-12 center-block mt-3">
+                        <p><a href="/signup">Create account</a></p>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    [Inject] HttpClient HttpClient { get; set; }
+    [Inject] NavigationManager NavigationManager { get; set; }
+    [Inject] ILocalStorageService LocalStorageService { get; set; }
+    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+    private SignInRequest _user = new();
+    private bool _signInSuccessful = true;
+    private async Task SignInUser()
+    {
+        
+        var response = await HttpClient.PostAsJsonAsync<SignInRequest>(APIEndpoints.s_signIn, _user);
+
+        if (response.IsSuccessStatusCode == false)
+        {
+            NavigationManager.NavigateTo("/signup");
+        }
+        else
+        {
+            string resposeString = await response.Content.ReadAsStringAsync();
+
+            var JSONWebToken = JObject.Parse(resposeString)["accessToken"].ToString();
+
+            await LocalStorageService.SetItemAsync("bearerToken", JSONWebToken);
+
+            await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
+
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", (string)JSONWebToken);
+
+            _signInSuccessful = true;
+
+            NavigationManager.NavigateTo("/profile");
+        }
+    }
+}

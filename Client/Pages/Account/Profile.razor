@@ -1,0 +1,53 @@
+﻿@page "/profile"
+
+<div class="container-fluid" style="height:85vh">
+    <div class="container-fluid center-block mb-3">
+        <div class="row profile-form">
+            <div class="col-3">
+                <img class="image" src="/LOGO.svg" />
+            </div>
+            <div class="col-9">
+                <div class="row">
+                    <div class="col-12 mt-3">
+                        <div class="row">
+                            <div class="col-10"><h1 style="overflow:clip"><b>Kyrylo bublikov</b></h1></div>
+        
+                            <div class="col-2 right-block"><button class="btn change-button" style="display:flex"><img class="me-1" src="/icons/change.svg" /> <p style="margin:0"class="text-button">Change</p></button></div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="col text-grey"><b>Registration date: </b></div>
+                    </div>
+                    <div class="col-12 mt-2">
+                        <div class="row">
+                            <div class="col-3 text-grey"><b>Phone:</b></div>
+                            <div class="col-9"><b>someinfo</b></div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2">
+                        <div class="row">
+                            <div class="col-3 text-grey"><b>Email</b></div>
+                            <div class="col-9"><b>someinfo</b></div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-2 mb-4">
+                        <div class="row">
+                            <div class="col-3 text-grey"><b>Country</b></div>
+                            <div class="col-9"><b>someinfo</b></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code{
+    private ApplicationUser _appUser = new ApplicationUser();
+}

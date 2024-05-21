@@ -1,4 +1,4 @@
-﻿.sign-up {
+﻿.sign-in {
     width: 40%;
     padding: 50px;
     position: fixed;
@@ -7,14 +7,15 @@
     -webkit-transform: translate(-50%, -50%);
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
-
 }
-.sign-up-form {
+
+.sign-in-form {
     background: #DDFFF1;
     border: 1px solid lightgrey;
     border-radius: 10px;
 }
-.inputSignUp {
+
+.inputSignIn {
     font-family: inherit;
     width: 70%;
     border: 0;
@@ -27,45 +28,47 @@
     transition: border-color 0.2s;
     text-align: center;
 }
+
 .center-block {
     display: flex;
     align-items: center;
     flex-direction: column;
 }
-@media(max-width:1150px){
-    .sign-up {
+
+@media(max-width:1150px) {
+    .sign-in {
         width: 80%;
     }
-    .inputSignUp{
-        width:90%;
+
+    .inputSignIn {
+        width: 90%;
     }
 }
 
 @media(max-width:680px) {
     .image {
-        width: 100%!important;
+        width: 100% !important;
     }
-    .sign-up {
+
+    .sign-in {
         width: 100%;
     }
 
-    .inputSignUp {
+    .inputSignIn {
         width: 90%;
     }
 }
 
-.image{
-    width:70%;
+.image {
+    width: 70%;
 }
 
-.create-button {
+.login-button {
     background-color: #18B48F;
-    color:white;
+    color: white;
 }
 
 .return-button {
     background-color: #18B48F;
     color: white;
 }
-
-    
