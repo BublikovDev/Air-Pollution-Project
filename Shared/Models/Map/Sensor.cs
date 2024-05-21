@@ -18,6 +18,7 @@ namespace Shared.Models.Map
         public double MinValue { get; set; }
         public double MaxValue { get; set; }
         public double AvgValue { get; set; }
+        public bool IsDeleted { get; set; }=false;
 
         public int LocationId { get; set; }
         public Location Location { get; set; }

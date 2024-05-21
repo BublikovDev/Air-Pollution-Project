@@ -136,6 +136,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddScoped<IOpenAqService, OpenAqService>();
 builder.Services.AddScoped<IDataService, DataService>();
+builder.Services.AddScoped<ICountryService, CountryService>();
 
 var app = builder.Build();
 

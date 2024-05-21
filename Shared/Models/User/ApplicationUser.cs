@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Shared.Models.Map;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,6 +17,11 @@ namespace Shared.Models.User
         public string? Lastname { get; set; }
 
         public string? Role { get; set; }
+
+        public DateTime CreatedDate { get; set; }
+
+        public List<Country> Countries { get; set; }
+
 
         public bool? IsDeleted { get; set; } = false;
 

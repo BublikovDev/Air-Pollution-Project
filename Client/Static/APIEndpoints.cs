@@ -12,7 +12,7 @@
         internal readonly static string s_signIn = $"{ServerBaseUrl}/api/auth/signin";
         internal readonly static string s_signUp = $"{ServerBaseUrl}/api/auth/signup";
         internal readonly static string s_logOut = $"{ServerBaseUrl}/api/auth/logout";
-        internal readonly static string s_userGetData = $"{ServerBaseUrl}/api/user/userdata";
+        internal readonly static string s_userGetData = $"{ServerBaseUrl}/api/user/GetById";
         internal readonly static string s_userPutData = $"{ServerBaseUrl}/api/user/userdata";
 
 

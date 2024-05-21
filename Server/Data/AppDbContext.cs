@@ -34,6 +34,10 @@ namespace Server.Data
                 .WithOne(s => s.Location)
                 .HasForeignKey(s => s.LocationId);
 
+            modelBuilder.Entity<ApplicationUser>()
+                .HasMany(a => a.Countries)
+                .WithMany(c => c.Users);
+
 
             base.OnModelCreating(modelBuilder);
         }

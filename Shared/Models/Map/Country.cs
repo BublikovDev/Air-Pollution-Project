@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Models.User;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -14,6 +15,11 @@ namespace Shared.Models.Map
         public string Code { get; set; }
         public string Name { get; set; }
 
+        public bool IsDeleted { get; set; } = false;
+
+
         public List<Location> Locations { get; set; }
+
+        public List<ApplicationUser> Users { get; set; }
     }
 }

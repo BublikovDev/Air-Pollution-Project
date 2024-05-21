@@ -92,6 +92,7 @@ namespace Server.Controllers
                     UserName = request.Email,
                     Email = request.Email,
                     Role = request.Role,
+                    CreatedDate= DateTime.UtcNow,
                     DebugMode = false,
                     SecurityStamp = Guid.NewGuid().ToString()
                 };

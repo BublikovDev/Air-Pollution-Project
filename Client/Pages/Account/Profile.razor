@@ -1,4 +1,11 @@
 ﻿@page "/profile"
+@using Blazored.LocalStorage
+@using Client.Providers
+@using Client.Static
+@using Microsoft.AspNetCore.Components.Authorization
+@using Shared.Models.User
+@using System.IdentityModel.Tokens.Jwt
+@using System.Net.Http.Headers
 
 <div class="container-fluid" style="height:85vh">
     <div class="container-fluid center-block mb-3">
@@ -7,36 +14,54 @@
                 <img class="image" src="/LOGO.svg" />
             </div>
             <div class="col-9">
+                @if(_appUser.Email!=null){
                 <div class="row">
                     <div class="col-12 mt-3">
                         <div class="row">
-                            <div class="col-10"><h1 style="overflow:clip"><b>Kyrylo bublikov</b></h1></div>
+                            @if (!String.IsNullOrEmpty(_appUser.FirstName) && !String.IsNullOrEmpty(_appUser.Lastname))
+                                {
+                                    <div class="col-10"><h1 style="overflow:clip"><b>@_appUser.FirstName @_appUser.Lastname</b></h1></div>
+                                }
+                                else
+                                {
+                                <div class="col-10"><h1 style="overflow:clip"><b>NewUser</b></h1></div>
+                                }
         
                             <div class="col-2 right-block"><button class="btn change-button" style="display:flex"><img class="me-1" src="/icons/change.svg" /> <p style="margin:0"class="text-button">Change</p></button></div>
                         </div>
                     </div>
                     <div class="col-12">
-                        <div class="col text-grey"><b>Registration date: </b></div>
+                        <div class="col text-grey"><b>Registration date: @_appUser.CreatedDate.Date</b></div>
                     </div>
                     <div class="col-12 mt-2">
                         <div class="row">
                             <div class="col-3 text-grey"><b>Phone:</b></div>
-                            <div class="col-9"><b>someinfo</b></div>
-                        </div>
+                                @if (_appUser.PhoneNumber != null)
+                                {
+                                    <div class="col-9"><b>@_appUser.PhoneNumber</b></div>
+                                }
+                            </div>
                     </div>
                     <div class="col-12 mt-2">
                         <div class="row">
                             <div class="col-3 text-grey"><b>Email</b></div>
-                            <div class="col-9"><b>someinfo</b></div>
-                        </div>
+                                @if (_appUser.Email != null)
+                                {
+                                    <div class="col-9"><b>@_appUser.Email</b></div>
+                                }
+                            </div>
                     </div>
                     <div class="col-12 mt-2 mb-4">
                         <div class="row">
                             <div class="col-3 text-grey"><b>Country</b></div>
-                            <div class="col-9"><b>someinfo</b></div>
-                        </div>
+                                @if (_appUser.Countries != null)
+                                {
+                                    <div class="col-9"><b>@_appUser.Countries.FirstOrDefault()</b></div>
+                                }
+                            </div>
                     </div>
                 </div>
+                }
             </div>
         </div>
         <div class="row">
@@ -49,5 +74,51 @@
 
 
 @code{
+    [Inject] HttpClient HttpClient { get; set; }
+    [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+    [Inject] ILocalStorageService LocalStorageService { get; set; }
+    [Inject] NavigationManager NavigationManager { get; set; }
+
+
     private ApplicationUser _appUser = new ApplicationUser();
+    private string userID;
+    private string Name;
+    JwtSecurityTokenHandler _jwtSecurityTokenHandler = new();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await SignInWithBrowserLocalStorageBearerToken();
+        try
+        {
+            string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
+            JwtSecurityToken jwtSecurityToken = _jwtSecurityTokenHandler.ReadJwtToken(savedToken);
+            foreach (var claim in jwtSecurityToken.Claims)
+                if (claim.Type == "id")
+                    userID = claim.Value;
+            Name = jwtSecurityToken.Subject;
+
+            _appUser = await HttpClient.GetFromJsonAsync<ApplicationUser>($"{APIEndpoints.s_userGetData}/{userID}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+    private async Task SignInWithBrowserLocalStorageBearerToken()
+    {
+        if (await LocalStorageService.ContainKeyAsync("bearerToken"))
+        {
+            string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
+
+            await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
+
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
+
+            StateHasChanged();
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/signin");
+        }
+    }
 }
