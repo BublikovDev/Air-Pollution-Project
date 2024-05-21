@@ -1,0 +1,41 @@
+﻿.sign-up {
+    width: 40%;
+    padding: 50px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+
+}
+.sign-up-form {
+    background: #ccc;
+}
+.inputSignUp {
+    font-family: inherit;
+    width: 70%;
+    border: 0;
+    border-bottom: 2px solid gray;
+    outline: 0;
+    font-size: 1.3rem;
+    color: grey;
+    padding: 7px 0;
+    background: transparent;
+    transition: border-color 0.2s;
+    text-align: center;
+}
+.center-block {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+@media(max-width:1150px){
+    .sign-up {
+        width: 80%;
+    }
+    .inputSignUp{
+        width:90%;
+    }
+}
+

@@ -43,7 +43,9 @@
 </div>
 
 @code {
+    [Inject] NavigationManager NavigationManager { get; set; }
     private bool collapseNavMenu = true;
+    private bool display_nav = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
@@ -51,4 +53,5 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+    
 }

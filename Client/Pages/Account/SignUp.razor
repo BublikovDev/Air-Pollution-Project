@@ -4,31 +4,36 @@
 @inject IJSRuntime _jsRuntime
 
 
-<div class="container-fluid">
+<div class="container-fluid sign-up">
     <div class="row">
-        <div class="col">
-            <h1>Green Breathe</h1>
+        <div class="col-12 center-block">
+            <img src="/wwwroot/Brand_name.svg">
         </div>
     </div>
-    <div class="row">
-        <div class="col">
+    <div class="row sign-up-form">
+        <div class="col mt-5">
+            <div class="row">
+                <div class="col-12 center-block">
+                    <h2>Register</h2>
+                </div>
+            </div>
             <EditForm Model="_user" OnValidSubmit="SignUpUser">
                 <DataAnnotationsValidator />
                 <div class="row">
-                    <div class="col-xl-12">
-                        <input @bind-value="_user.Email" type="email" placeholder="Email">
+                    <div class="col-12 center-block mt-3">
+                        <input @bind-value="_user.Email" type="email" placeholder="Email" class="inputSignUp">
                     </div>
-                    <div class="col-xl-12">
-                        <input @bind-value="_user.Password" type="password" placeholder="Password">
+                    <div class="col-12 center-block mt-3">
+                        <input @bind-value="_user.Password" type="password" placeholder="Password" class="inputSignUp">
                     </div>
-                    <div class="col-xl-12">
-                        <input @bind-value="repeatPassword" type="password" placeholder="Password">
+                    <div class="col-12 center-block mt-3">
+                        <input @bind-value="repeatPassword" type="password" placeholder="Repeat Password" class="inputSignUp">
                     </div>
 
-                    <div class="col-xl-12">
-                        <button type="submit" class="bttn-small btn-fill w-100">Create my account</button>
+                    <div class="col-12 center-block mt-3">
+                        <button type="submit" class="btn">Create my account</button>
                     </div>
-                    <div class="col-xl-12">
+                    <div class="col-12 center-block mt-3">
                         <p><a href="/signin">Do you already have an account?</a></p>
                     </div>
                 </div>
