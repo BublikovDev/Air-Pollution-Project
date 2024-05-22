@@ -79,32 +79,6 @@
                             <span class="bi bi-account-fill-nav-menu" aria-hidden="true"></span> Profile
                         </NavLink>
                     </div>
-                </Authorized>
-	        </AuthorizeView>
-        </CascadingAuthenticationState>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-map-fill-nav-menu" aria-hidden="true"></span> Map
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link">
-                <span class="bi bi-analytics-fill-nav-menu" aria-hidden="true"></span> Analytics
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link">
-                <span class="bi bi-info-fill-nav-menu" aria-hidden="true"></span> Info
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link">
-                <span class="bi bi-about-fill-nav-menu" aria-hidden="true"></span> About
-            </NavLink>
-        </div
-        <CascadingAuthenticationState>
-            <AuthorizeView>
-                <Authorized Context="Auth">
                     <div class="nav-item px-3">
                         <a class="nav-link" @onclick="SignOut">
                             <span class="bi bi-logout-fill-nav-menu" aria-hidden="true"></span> Logout
@@ -113,6 +87,26 @@
                 </Authorized>
 	        </AuthorizeView>
         </CascadingAuthenticationState>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-map-fill-nav-menu" aria-hidden="true"></span> Map
+            </NavLink>
+        </div>
+        @* <div class="nav-item px-3">
+            <NavLink class="nav-link">
+                <span class="bi bi-analytics-fill-nav-menu" aria-hidden="true"></span> Analytics
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link">
+                <span class="bi bi-about-fill-nav-menu" aria-hidden="true"></span> About
+            </NavLink>
+        </div> *@
+        <div class="nav-item px-3 mobile">
+            <NavLink class="nav-link">
+                <span class="bi bi-info-fill-nav-menu" aria-hidden="true"></span> Info
+            </NavLink>
+        </div>
     </nav>
 </div>
 }

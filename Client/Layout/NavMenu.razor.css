@@ -115,6 +115,14 @@
     }
 }
 
+@media(max-width:450px){
+    .mobile{
+        visibility:visible;
+    }
+}
+.mobile {
+    visibility:hidden;
+}
 .nav-link{
     cursor:pointer;
 }
