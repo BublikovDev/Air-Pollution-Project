@@ -1,0 +1,16 @@
+﻿.center-block {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.btn-primary.active {
+    background-color: #18B48F;
+}
+
+.btn-primary {
+    background-color: #AFCABE;
+    border: 1px solid #128756;
+}
+input[type='radio']{
+    accent-color:black;
+}

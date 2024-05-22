@@ -6,17 +6,29 @@
 @inject IJSRuntime JS
 
 <div class="container-fluid">
+    <div class=row>
+        <div class="col mb-3 center-block">
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-primary @(display_traffic ? "active" : "")" @onclick="() => SwitchMap(true)">
+                    <input type="radio" name="options" autocomplete="off" checked="@display_traffic"> Traffic
+                </label>
+                <label class="btn btn-primary @(display_traffic ? "" : "active")" @onclick="() => SwitchMap(false)">
+                    <input type="radio" name="options" autocomplete="off" checked="@(display_traffic == false)"> Sensors
+                </label>
+            </div>
+        </div>
+    </div>
     <div class="row">
         @if (display_traffic)
         {
             <div class="col">
-                <div id="map2" style="height:85vh;width:100%;"></div>
+                <div id="map2" style="height:79vh;width:100%;"></div>
             </div>
         }
         else
         {
             <div class="col">
-                <div id="map" style="height:85vh;width:100%;"></div>
+                <div id="map" style="height:79vh;width:100%;"></div>
             </div>
         }
         
@@ -43,32 +55,10 @@
                 //choose aqi below
                 //
                 await LoadData();
+
                 if(_country!=null)
                 {
-                    await JS.InvokeVoidAsync("initialize_leaflet", null);
-                    StateHasChanged();
-                    foreach (var item in _country.Locations)
-                    {
-                        var aqiSensor = item.Sensors.Where(s => s.Name == "AQI").FirstOrDefault();
-                        
-                        if(aqiSensor.Value<=50)
-                            await JS.InvokeVoidAsync("addMarkers_leaflet", item.Latitude, item.Longitude, (int)aqiSensor.Value, "green-div-icon", item);
-                        else if (aqiSensor.Value <= 100)
-                            await JS.InvokeVoidAsync("addMarkers_leaflet", item.Latitude, item.Longitude, (int)aqiSensor.Value, "yellow-div-icon",item);
-                        else if (aqiSensor.Value <= 150)
-                            await JS.InvokeVoidAsync("addMarkers_leaflet", item.Latitude, item.Longitude, (int)aqiSensor.Value, "orange-div-icon",item);
-                        else if (aqiSensor.Value <= 200)
-                            await JS.InvokeVoidAsync("addMarkers_leaflet", item.Latitude, item.Longitude, (int)aqiSensor.Value, "red-div-icon",item);
-                        else if (aqiSensor.Value <= 300)
-                            await JS.InvokeVoidAsync("addMarkers_leaflet", item.Latitude, item.Longitude, (int)aqiSensor.Value, "purple-div-icon", item);
-                        // else if (aqiSensor.Value > 300)
-                        //     await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude, (int)aqiSensor.Value, "burgundy-div-icon");
-                        // else
-                        //     await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude, (int)aqiSensor.Value, "grey-div-icon");
-
-                    }
-
-                    StateHasChanged();
+                    await LoadLeaflet();
                 }
                 else
                 {
@@ -77,10 +67,37 @@
             }
             catch(Exception ex)
             {
-                var a = 0;
             }
 
         }
+    }
+
+    protected async Task LoadLeaflet()
+    {
+        await JS.InvokeVoidAsync("initialize_leaflet", null);
+        StateHasChanged();
+        foreach (var item in _country.Locations)
+        {
+            var aqiSensor = item.Sensors.Where(s => s.Name == "AQI").FirstOrDefault();
+
+            if(aqiSensor.Value<=50)
+                await JS.InvokeVoidAsync("addMarkers_leaflet", item.Latitude, item.Longitude, (int)aqiSensor.Value, "green-div-icon", item);
+            else if (aqiSensor.Value <= 100)
+                await JS.InvokeVoidAsync("addMarkers_leaflet", item.Latitude, item.Longitude, (int)aqiSensor.Value, "yellow-div-icon",item);
+            else if (aqiSensor.Value <= 150)
+                await JS.InvokeVoidAsync("addMarkers_leaflet", item.Latitude, item.Longitude, (int)aqiSensor.Value, "orange-div-icon",item);
+            else if (aqiSensor.Value <= 200)
+                await JS.InvokeVoidAsync("addMarkers_leaflet", item.Latitude, item.Longitude, (int)aqiSensor.Value, "red-div-icon",item);
+            else if (aqiSensor.Value <= 300)
+                await JS.InvokeVoidAsync("addMarkers_leaflet", item.Latitude, item.Longitude, (int)aqiSensor.Value, "purple-div-icon", item);
+            // else if (aqiSensor.Value > 300)
+            //     await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude, (int)aqiSensor.Value, "burgundy-div-icon");
+            // else
+            //     await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude, (int)aqiSensor.Value, "grey-div-icon");
+
+        }
+
+        StateHasChanged();
     }
 
     protected async Task LoadData()
@@ -95,5 +112,25 @@
         {
 
         }
+    }
+
+    protected async Task LoadGoogle()
+    {
+        await JS.InvokeVoidAsync("initialize_google", null);
+    }
+
+    private async void SwitchMap(bool showTraffic)
+    {
+        display_traffic = showTraffic;
+        StateHasChanged();
+        if (display_traffic)
+        {
+            await LoadGoogle();
+        }
+        else
+        {
+            await LoadLeaflet();
+        }
+
     }
 }

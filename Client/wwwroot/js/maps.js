@@ -1,6 +1,11 @@
 ﻿var map;
 function initialize_leaflet() {
-    map = L.map('map').setView([52.133, 19.615], 7);
+    if (map_g == null) {
+        map = L.map('map').setView([52.133, 19.615], 7);
+    }
+    else {
+        map = L.map('map').setView([map_g.getCenter().lat(), map_g.getCenter().lng()], map_g.getZoom());
+    }
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         {
         maxZoom: 19,
@@ -9,6 +14,19 @@ function initialize_leaflet() {
 
 
 
+}
+
+var map_g;
+function initialize_google() {
+    map_g = new google.maps.Map(document.getElementById("map2"), {
+        zoom: map.getZoom(),
+        //zoom: 12,
+        center: { lat: map.getCenter().lat, lng: map.getCenter().lng },
+        //center: { lat: 52.216, lng: 21.018 },
+    });
+    const trafficLayer = new google.maps.TrafficLayer();
+
+    trafficLayer.setMap(map_g);
 }
 
 function addMarkers_leaflet(ltd, lng, aqi, className, location) {
