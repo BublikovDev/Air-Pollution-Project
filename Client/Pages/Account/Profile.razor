@@ -7,6 +7,8 @@
 @using System.IdentityModel.Tokens.Jwt
 @using System.Net.Http.Headers
 
+@inject IJSRuntime JS
+
 <div class="container-fluid" style="height:85vh">
     <div class="container-fluid center-block mb-3">
         <div class="row profile-form">
@@ -51,7 +53,7 @@
                                 }
                             </div>
                     </div>
-                    <div class="col-12 mt-2 mb-4">
+                    <div class="col-12 mt-2">
                         <div class="row">
                             <div class="col-3 text-grey"><b>Country</b></div>
                                 @if (_appUser.Countries!=null && _appUser.Countries.Count>0 && !String.IsNullOrEmpty(_appUser.Countries.FirstOrDefault().Name))
@@ -61,14 +63,17 @@
                             </div>
                     </div>
                 </div>
+                        <div class="row mt-2 mb-4">
+                <div class="col">
+                    Bearer: 
+                    <input type="text" value="@savedToken" id="bearerInput" disabled>
+                    <button @onclick="CopyToClipBoard">Copy text</button>
+                </div>
+            </div>
                 }
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-
-            </div>
-        </div>
+        
     </div>
 </div>
 
@@ -84,13 +89,14 @@
     private string userID;
     private string Name;
     JwtSecurityTokenHandler _jwtSecurityTokenHandler = new();
+    string savedToken="";
 
     protected async override Task OnInitializedAsync()
     {
         await SignInWithBrowserLocalStorageBearerToken();
         try
         {
-            string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
+            savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
             JwtSecurityToken jwtSecurityToken = _jwtSecurityTokenHandler.ReadJwtToken(savedToken);
             foreach (var claim in jwtSecurityToken.Claims)
                 if (claim.Type == "id")
@@ -120,5 +126,9 @@
         {
             NavigationManager.NavigateTo("/signin", true);
         }
+    }
+
+    private async Task CopyToClipBoard(){
+        await JS.InvokeVoidAsync("copyToClipboard", null);
     }
 }
