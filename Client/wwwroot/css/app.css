@@ -12,7 +12,7 @@ a, .btn-link {
 
 .btn-primary {
     color: #fff;
-    background-color: #1b6ec2;
+    background-color: #18B48F;
     border-color: #1861ac;
 }
 
@@ -82,7 +82,7 @@ a, .btn-link {
     }
 
         .loading-progress circle:last-child {
-            stroke: #1b6ec2;
+            stroke: #18B48F;
             stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
             transition: stroke-dasharray 0.05s ease-in-out;
         }
@@ -100,4 +100,8 @@ a, .btn-link {
 
 code {
     color: #c02d76;
+}
+
+.nav-scrollable {
+    box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 0.5);
 }

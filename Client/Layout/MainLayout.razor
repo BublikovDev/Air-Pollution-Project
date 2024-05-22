@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
 <div class="page">
-    <div class="sidebar" hidden="@hidden_navmenu">
+    <div class="sidebar">
         <NavMenu />
     </div>
 
@@ -8,26 +8,27 @@
         <article class="content">
             @Body
         </article>
-        <div class="container-fluid footer" hidden="@hidden_footer">
+        @if (!hidden_footer)
+        {
+            <div class="container-fluid footer">
             <div class="row">
                 <div class="col" style="height:14vh">
 
                 </div>
             </div>
         </div>
+        }
     </main>
 </div>
 
 @code{
     [Inject] NavigationManager NavigationManager { get; set; }
-    private bool hidden_navmenu = false;
     private bool hidden_footer = false;
 
     protected override Task OnInitializedAsync()
     {
         if (NavigationManager.Uri == $"{NavigationManager.BaseUri}signup" || NavigationManager.Uri == $"{NavigationManager.BaseUri}signin")
         {
-            hidden_navmenu = true;
             hidden_footer = true;
         }
         return base.OnInitializedAsync();

@@ -1,4 +1,5 @@
-﻿<div class="container-fluid ">
+﻿@if (visible)
+{
     <div class="container-fluid">
         <div class="row">
             <div class="col-2">
@@ -29,4 +30,22 @@
             </div>
         </div>
     </div>
-</div>
+}
+
+@code{
+    [Inject] NavigationManager NavigationManager { get; set; }
+
+    private bool visible = true;
+
+    protected override async Task OnInitializedAsync() 
+    { 
+        if(NavigationManager.Uri == $"{NavigationManager.BaseUri}signup" || NavigationManager.Uri == $"{NavigationManager.BaseUri}signin")
+        {
+            visible = false;
+        }
+        else
+        {
+            visible=true;
+        }
+    }
+}

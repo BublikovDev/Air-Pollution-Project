@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Shared.Models.User;
 
@@ -74,6 +75,13 @@ namespace Server.Controllers
 
                 if (user == null)
                     return NotFound("User with this ID is not found");
+
+                var countries = await _dataContext.Countries
+                    .Include(c => c.Users)
+                    .Where(c=>c.Users.FirstOrDefault(u=>u.Id==user.Id)!=null)
+                    .ToListAsync();
+
+                user.Countries = countries;
 
                 return Ok(user);
             }

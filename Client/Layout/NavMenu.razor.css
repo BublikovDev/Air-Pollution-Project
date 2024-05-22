@@ -6,8 +6,8 @@
 }
 
 .top-row {
-    height: 3.5rem;
     background-color: #DDFFF1;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
 }
 
 .navbar-brand {
@@ -113,4 +113,12 @@
     .top-row {
         box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
     }
+}
+
+.nav-link{
+    cursor:pointer;
+}
+
+.image{
+    width:50px;
 }

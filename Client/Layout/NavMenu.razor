@@ -1,26 +1,90 @@
 ﻿@using Blazored.LocalStorage
 @using Client.Providers
+@using Client.Static
 @using Microsoft.AspNetCore.Components.Authorization
+@using System.Net.Http.Headers
+@using System.IdentityModel.Tokens.Jwt
+@using Shared.Models.User
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Client</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
+@if(visible)
+{
+<CascadingAuthenticationState>
+    <AuthorizeView>
+        <Authorized Context="Auth">
+            
+            <div class="top-row navbar navbar-dark">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-3">
+                            <img class="image" src="/LOGO.svg"/>
+                        </div>
+                        @if(!String.IsNullOrEmpty(_appUser.Email))
+                        {
+                        <div class="col-9" style="text-align: center;line-height: 300%;">@_appUser.Email</div>
+                        }
+                    </div>
+                    <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+            </div>
+        </Authorized>
+	
+        <NotAuthorized>
+            <div class="top-row navbar navbar-dark">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-3">
+                            <img class="image" src="/LOGO.svg"/>
+                        </div>
+                    </div>
+                    <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+            </div>
+        </NotAuthorized>
+	</AuthorizeView>
+</CascadingAuthenticationState>
+
+
 
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
+        
+        <CascadingAuthenticationState>
+            <AuthorizeView>
+                <NotAuthorized>
+        <div class="nav-item px-3">
+            <div class="row">
+            <div class="col-6">
+                <a class="nav-link" @onclick="NavToSignIn" Match="NavLinkMatch.All" style="text-align:center">
+                     Login
+                </a></div>
+                <div class="col-6"><a class="nav-link" @onclick="NavToSignUp" Match="NavLinkMatch.All" style="text-align:center">
+                 Register
+            </a></div>
+            
+            
+        </div>
+        </div>
+        </NotAuthorized>
+	        </AuthorizeView>
+        </CascadingAuthenticationState>
+        <CascadingAuthenticationState>
+            <AuthorizeView>
+                <Authorized Context="Auth">
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/profile" @onclick="NavToProfile">
+                            <span class="bi bi-account-fill-nav-menu" aria-hidden="true"></span> Profile
+                        </NavLink>
+                    </div>
+                </Authorized>
+	        </AuthorizeView>
+        </CascadingAuthenticationState>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="bi bi-map-fill-nav-menu" aria-hidden="true"></span> Map
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/profile">
-                <span class="bi bi-account-fill-nav-menu" aria-hidden="true"></span> Account
             </NavLink>
         </div>
         <div class="nav-item px-3">
@@ -38,15 +102,22 @@
                 <span class="bi bi-about-fill-nav-menu" aria-hidden="true"></span> About
             </NavLink>
         </div
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" @onclick="SignOut">
-                <span class="bi bi-logout-fill-nav-menu" aria-hidden="true"></span> Logout
-            </NavLink>
-        </div>
+        <CascadingAuthenticationState>
+            <AuthorizeView>
+                <Authorized Context="Auth">
+                    <div class="nav-item px-3">
+                        <a class="nav-link" @onclick="SignOut">
+                            <span class="bi bi-logout-fill-nav-menu" aria-hidden="true"></span> Logout
+                        </a>
+                    </div>
+                </Authorized>
+	        </AuthorizeView>
+        </CascadingAuthenticationState>
     </nav>
 </div>
-
+}
 @code {
+    [Inject] HttpClient HttpClient { get; set; }
     [Inject] NavigationManager NavigationManager { get; set; }
     [Inject] ILocalStorageService LocalStorageService { get; set; }
     [Inject] AuthenticationStateProvider AuthenticationStateProvider { get; set; }
@@ -54,12 +125,60 @@
     private bool collapseNavMenu = true;
     private bool display_nav = true;
 
+    private ApplicationUser _appUser = new ApplicationUser();
+    JwtSecurityTokenHandler _jwtSecurityTokenHandler = new();
+
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private bool visible = true;
+
+    protected override async Task OnInitializedAsync() 
+    { 
+        if(NavigationManager.Uri == $"{NavigationManager.BaseUri}signup" || NavigationManager.Uri == $"{NavigationManager.BaseUri}signin")
+        {
+
+            visible = false;
+        }
+        else
+        {
+            visible=true;
+        }
+        await SignInWithBrowserLocalStorageBearerToken(); 
+        try
+        {
+            string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
+            JwtSecurityToken jwtSecurityToken = _jwtSecurityTokenHandler.ReadJwtToken(savedToken);
+            string userID="";
+            foreach (var claim in jwtSecurityToken.Claims)
+                if (claim.Type == "id")
+                    userID = claim.Value;
+
+            _appUser = await HttpClient.GetFromJsonAsync<ApplicationUser>($"{APIEndpoints.s_userGetData}/{userID}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
     }
+    private async Task SignInWithBrowserLocalStorageBearerToken()
+    {
+        if (await LocalStorageService.ContainKeyAsync("bearerToken"))
+        {
+            string savedToken = await LocalStorageService.GetItemAsync<string>("bearerToken");
+
+            await ((AppAuthenticationStateProvider)AuthenticationStateProvider).SignIn();
+
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
+
+            StateHasChanged();
+        }        
+    }
+
     private async Task SignOut()
     {
         if (await LocalStorageService.ContainKeyAsync("bearerToken"))
@@ -70,7 +189,20 @@
 
             StateHasChanged();
 
-            NavigationManager.NavigateTo("/");
+            NavigationManager.NavigateTo("/", true);
         }
+    }
+
+    private void NavToSignIn()
+    {
+        NavigationManager.NavigateTo("/signin", true);
+    }
+    private void NavToSignUp()
+    {
+        NavigationManager.NavigateTo("/signup", true);
+    }
+    private void NavToProfile()
+    {
+        NavigationManager.NavigateTo("/profile", true);
     }
 }

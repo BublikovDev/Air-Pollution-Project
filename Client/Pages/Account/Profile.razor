@@ -54,9 +54,9 @@
                     <div class="col-12 mt-2 mb-4">
                         <div class="row">
                             <div class="col-3 text-grey"><b>Country</b></div>
-                                @if (_appUser.Countries != null)
+                                @if (_appUser.Countries!=null && _appUser.Countries.Count>0 && !String.IsNullOrEmpty(_appUser.Countries.FirstOrDefault().Name))
                                 {
-                                    <div class="col-9"><b>@_appUser.Countries.FirstOrDefault()</b></div>
+                                    <div class="col-9"><b>@_appUser.Countries.FirstOrDefault().Name</b></div>
                                 }
                             </div>
                     </div>
@@ -118,7 +118,7 @@
         }
         else
         {
-            NavigationManager.NavigateTo("/signin");
+            NavigationManager.NavigateTo("/signin", true);
         }
     }
 }

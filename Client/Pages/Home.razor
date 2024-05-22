@@ -7,9 +7,20 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col">
-            <div id="map" style="height:85vh;width:100%;"></div>
-        </div>
+        @if (display_traffic)
+        {
+            <div class="col">
+                <div id="map2" style="height:85vh;width:100%;"></div>
+            </div>
+        }
+        else
+        {
+            <div class="col">
+                <div id="map" style="height:85vh;width:100%;"></div>
+            </div>
+        }
+        
+        
     </div>
 </div>
 
@@ -19,6 +30,8 @@
 
     Country _country;
     bool _isDataLoaded =false;
+
+    bool display_traffic = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -32,22 +45,22 @@
                 await LoadData();
                 if(_country!=null)
                 {
-                    await JS.InvokeVoidAsync("initialize", null);
+                    await JS.InvokeVoidAsync("initialize_leaflet", null);
                     StateHasChanged();
                     foreach (var item in _country.Locations)
                     {
                         var aqiSensor = item.Sensors.Where(s => s.Name == "AQI").FirstOrDefault();
                         
                         if(aqiSensor.Value<=50)
-                            await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude, (int)aqiSensor.Value, "green-div-icon");
+                            await JS.InvokeVoidAsync("addMarkers_leaflet", item.Latitude, item.Longitude, (int)aqiSensor.Value, "green-div-icon", item);
                         else if (aqiSensor.Value <= 100)
-                            await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude, (int)aqiSensor.Value, "yellow-div-icon");
+                            await JS.InvokeVoidAsync("addMarkers_leaflet", item.Latitude, item.Longitude, (int)aqiSensor.Value, "yellow-div-icon",item);
                         else if (aqiSensor.Value <= 150)
-                            await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude, (int)aqiSensor.Value, "orange-div-icon");
+                            await JS.InvokeVoidAsync("addMarkers_leaflet", item.Latitude, item.Longitude, (int)aqiSensor.Value, "orange-div-icon",item);
                         else if (aqiSensor.Value <= 200)
-                            await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude, (int)aqiSensor.Value, "red-div-icon");
+                            await JS.InvokeVoidAsync("addMarkers_leaflet", item.Latitude, item.Longitude, (int)aqiSensor.Value, "red-div-icon",item);
                         else if (aqiSensor.Value <= 300)
-                            await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude, (int)aqiSensor.Value, "purple-div-icon");
+                            await JS.InvokeVoidAsync("addMarkers_leaflet", item.Latitude, item.Longitude, (int)aqiSensor.Value, "purple-div-icon", item);
                         // else if (aqiSensor.Value > 300)
                         //     await JS.InvokeVoidAsync("addMarkers", item.Latitude, item.Longitude, (int)aqiSensor.Value, "burgundy-div-icon");
                         // else
