@@ -69,11 +69,12 @@ function addMarkers_leaflet(ltd, lng, aqi, className, location) {
     var myIcon = L.divIcon({ className: className, html: '<b>' + aqi + '</b>' });
     function createPopupContent(location) {
         let popupContent = '<table>';
-        popupContent += '<tr><td>' + location.name + '</td></tr>';
+        popupContent += '<tr><td><b>' + location.name + '</b></td></tr>';
         popupContent += '<tr><td>' + location.latitude + ' ' + location.longitude + '</td></tr>';
 
         location.sensors.forEach(sensor => {
-            popupContent += '<tr><td>Sensor:</td><td>' + sensor.name + '</td></tr>';
+            popupContent += '<tr><td></td></tr>';
+            popupContent += '<tr><td>Sensor:</td><td><b>' + sensor.name + '</b></td></tr>';
             popupContent += '<tr><td>Value:</td><td>' + sensor.value.toFixed(2) + '</td></tr>';
             //popupContent += '<tr><td>Min</td><td>' + sensor.minValue.toFixed(2) + '</td></tr>';
             //popupContent += '<tr><td>Max</td><td>' + sensor.maxValue.toFixed(2) + '</td></tr>';

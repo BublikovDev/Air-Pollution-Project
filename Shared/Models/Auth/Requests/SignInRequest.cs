@@ -9,8 +9,8 @@ namespace Shared.Models.Auth.Requests
 {
     public class SignInRequest
     {
-        [Required(ErrorMessage = "Enter the username or email")]
-        public string? UsernameOrEmail { get; set; }
+        [Required(ErrorMessage = "Enter email")]
+        public string? Email { get; set; }
 
         [Required(ErrorMessage = "Password required")]
         public string? Password { get; set; }

@@ -39,7 +39,7 @@ namespace Server.Controllers
         {
             try
             {
-                var user = await _userManager.FindByNameAsync(request.UsernameOrEmail) ?? await _userManager.FindByEmailAsync(request.UsernameOrEmail);
+                var user = await _userManager.FindByNameAsync(request.Email) ?? await _userManager.FindByEmailAsync(request.Email);
 
                 if (user == null)
                 {
@@ -67,7 +67,7 @@ namespace Server.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Error occured while trying to login as {request.UsernameOrEmail}. Logs provide more information");
+                return StatusCode(500, $"Error occured while trying to login as {request.Email}. Logs provide more information");
             }
         }
 
